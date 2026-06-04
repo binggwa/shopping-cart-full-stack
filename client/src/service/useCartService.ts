@@ -14,7 +14,9 @@ export const useCartService = (api: CartApiInterface) => {
       const data = await api.getCartItems();
       setCartItems(data);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "장바구니를 불러오는 데 실패했습니다.");
+      setError(
+        e instanceof Error ? e.message : "장바구니를 불러오는 데 실패했습니다.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -24,9 +26,28 @@ export const useCartService = (api: CartApiInterface) => {
     getCartItems();
   }, [getCartItems()]);
 
+  const changeQuantity = async (id: number, quantity: number) => {
+    const prevItems = [...cartItems];
+
+    // 낙관적 업데이트
+    setCartItems((prev) =>
+      prev.map((item) =>
+        item.cartItemId === id ? { ...item, quantity } : item
+      ),
+    );
+
+    try {
+      await api.updateCartItemQuantity(id, quantity);
+    } catch (e) {
+      setCartItems(prevItems);
+      alert("수량 변경에 실패했습니다.");
+    }
+  };
+
   return {
     cartItems,
     isLoading,
     error,
+    changeQuantity,
   };
 };
