@@ -7,7 +7,7 @@ export const useCartService = (api: CartApiInterface) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const getCartItems = useCallback(async () => {
+  const loadCartItems = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
@@ -23,16 +23,16 @@ export const useCartService = (api: CartApiInterface) => {
   }, [api]);
 
   useEffect(() => {
-    getCartItems();
-  }, [getCartItems()]);
+    loadCartItems();
+  }, [loadCartItems]);
 
   const changeQuantity = async (id: number, quantity: number) => {
     const prevItems = [...cartItems];
 
     // 낙관적 업데이트
-    setCartItems((prev) =>
-      prev.map((item) =>
-        item.cartItemId === id ? { ...item, quantity } : item
+    setCartItems((items) =>
+      items.map((item) =>
+        item.cartItemId === id ? { ...item, quantity } : item,
       ),
     );
 
@@ -44,10 +44,24 @@ export const useCartService = (api: CartApiInterface) => {
     }
   };
 
+  const removeCartItem = async (id: number) => {
+    const prevItems = [...cartItems];
+
+    setCartItems((items) => items.filter((item) => item.cartItemId !== id));
+
+    try {
+      await api.deleteCartItem(id);
+    } catch (e) {
+      setCartItems(prevItems);
+      alert("상품 제거에 실패했습니다.");
+    }
+  };
+
   return {
     cartItems,
     isLoading,
     error,
     changeQuantity,
+    removeCartItem,
   };
 };
