@@ -1,18 +1,19 @@
-import styled from "@emotion/styled";
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { Global } from '@emotion/react';
+import { CartPage } from './ui/pages/CartPage/CartPage';
+import { OrderConfirmPage } from './ui/pages/OrderConfirmPage/OrderConfirmPage';
+import { resetStyles } from './styles/resetStyles';
 
-const AppContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100px;
-`;
-
-function App() {
+export const App = () => {
   return (
-    <AppContainer>
-      <h1>초기설정</h1>
-    </AppContainer>
+    <BrowserRouter>
+      <Global styles={resetStyles} />
+      <Routes>
+        <Route path="/" element={<Navigate to="/cart" replace />} />
+        <Route path="/cart" element={<CartPage />} />
+        <Route path="/order-confirm" element={<OrderConfirmPage />} />
+        <Route path="*" element={<Navigate to="/cart" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
-}
-
-export default App;
+};
