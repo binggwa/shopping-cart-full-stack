@@ -1,4 +1,4 @@
-import { Checkbox } from '../Checkbox';
+import { Checkbox } from '../Checkbox/Checkbox';
 import type { CartItem as CartItemType } from '../../../domain/Types';
 import {
   ContentRow,
