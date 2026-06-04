@@ -69,13 +69,12 @@ export const CartPage = () => {
             )}
           </TitleSection>
 
-          {/* 로딩 중 스켈레톤 구현 필요*/}
           {currentStatus === 'loading' && (
-            <EmptyStateWrapper>로딩 스켈레톤</EmptyStateWrapper>
+            <EmptyStateWrapper>장바구니가 로딩중입니다..</EmptyStateWrapper>
           )}
 
           {currentStatus === 'error' && (
-            <EmptyStateWrapper>에러</EmptyStateWrapper>
+            <EmptyStateWrapper>에러가 발생했습니다!! 새로고침해주세요!!</EmptyStateWrapper>
           )}
 
           {currentStatus === 'success' && isEmpty && (
