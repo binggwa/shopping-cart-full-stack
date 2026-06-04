@@ -3,6 +3,7 @@ import type { CartItem as CartItemType } from '../../../domain/Types';
 import {
   ContentRow,
   DeleteButton,
+  Divider,
   InfoSection,
   ItemContainer,
   ProductName,
@@ -47,6 +48,8 @@ export const CartItem = ({
 
   return (
     <ItemContainer>
+      <Divider />
+
       <TopRow>
         <Checkbox checked={isSelected} onChange={() => onToggle(cartItemId)} />
         <DeleteButton onClick={() => onDelete(cartItemId)}>삭제</DeleteButton>

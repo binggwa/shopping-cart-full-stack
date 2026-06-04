@@ -38,6 +38,7 @@ export const useCartItemSelection = (cartItems: CartItem[]) => {
   const selectedItems = cartItems.filter((item) => actualSelectedIds.includes(item.cartItemId));
   const isAllSelected = cartItems.length > 0 && actualSelectedIds.length === cartItems.length;
 
+  const totalSelectedQuantity = selectedItems.reduce((sum, item) => sum + item.quantity, 0);
   const totalProductPrice = selectedItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
 
   const calculateDeliveryPrice = () => {
@@ -55,6 +56,7 @@ export const useCartItemSelection = (cartItems: CartItem[]) => {
     toggleSelection,
     toggleAll,
     isAllSelected,
+    totalSelectedQuantity,
     totalProductPrice,
     deliveryPrice,
     totalPrice,

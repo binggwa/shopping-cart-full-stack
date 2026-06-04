@@ -1,0 +1,124 @@
+import { useNavigate } from 'react-router-dom';
+import { CartItem } from '../../components/CartItem/CartItem';
+import { CartSummary } from '../../components/CartSummary/CartSummary';
+import { useCartService } from '../../../service/useCartService';
+import { useCartItemSelection } from '../../../service/useCartItemSelection';
+import { fetchCartApi } from '../../../infrastructure/api/fetchCartApi';
+import {
+  BottomSection,
+  CartListContainer,
+  CheckboxLabel,
+  EmptyStateWrapper,
+  MainContent,
+  OrderButton,
+  PageContainer,
+  PageTitle,
+  SelectAllRow,
+  SubTitle,
+  TitleSection,
+} from './CartPage.styles';
+import { Header } from '../../components/Header/Header';
+import { Checkbox } from '../../components/Checkbox/Checkbox';
+
+type PageStatus = 'idle' | 'loading' | 'success' | 'error';
+
+export const CartPage = () => {
+  const navigate = useNavigate();
+
+  const { cartItems, isLoading, error, changeQuantity, removeCartItem } =
+    useCartService(fetchCartApi);
+
+  const {
+    selectedIds,
+    toggleSelection,
+    toggleAll,
+    isAllSelected,
+    totalSelectedQuantity,
+    totalProductPrice,
+    deliveryPrice,
+    totalPrice,
+  } = useCartItemSelection(cartItems);
+
+  const currentStatus: PageStatus = isLoading
+    ? 'loading'
+    : error
+      ? 'error'
+      : 'success';
+
+  const isEmpty = cartItems.length === 0;
+
+  const handleOrderConfirm = () => {
+    navigate('/order-confirm', {
+      state: { selectedIds, totalSelectedQuantity, totalPrice },
+    });
+  };
+
+  return (
+    <PageContainer>
+      <Header onLogoClick={() => navigate('/')} />
+
+      <MainContent>
+        <TitleSection>
+          <PageTitle>장바구니</PageTitle>
+          {currentStatus === 'success' && !isEmpty && (
+            <SubTitle>
+              현재 {cartItems.length}종류의 상품이 담겨있습니다.
+            </SubTitle>
+          )}
+        </TitleSection>
+
+        {/* 로딩 중 스켈레톤 구현 필요*/}
+        {currentStatus === 'loading' && (
+          <EmptyStateWrapper>로딩 스켈레톤</EmptyStateWrapper>
+        )}
+
+        {currentStatus === 'error' && (
+          <EmptyStateWrapper>에러</EmptyStateWrapper>
+        )}
+
+        {currentStatus === 'success' && isEmpty && (
+          <EmptyStateWrapper>
+            장바구니에 담은 상품이 없습니다.
+          </EmptyStateWrapper>
+        )}
+
+        {currentStatus === 'success' && !isEmpty && (
+          <>
+            <SelectAllRow>
+              <Checkbox checked={isAllSelected} onChange={toggleAll} />
+              <CheckboxLabel>전체 선택</CheckboxLabel>
+            </SelectAllRow>
+
+            <CartListContainer>
+              {cartItems.map((item) => (
+                <CartItem
+                  key={item.cartItemId}
+                  item={item}
+                  isSelected={selectedIds.includes(item.cartItemId)}
+                  onToggle={toggleSelection}
+                  onQuantityChange={changeQuantity}
+                  onDelete={removeCartItem}
+                />
+              ))}
+            </CartListContainer>
+
+            <CartSummary
+              totalProductPrice={totalProductPrice}
+              deliveryPrice={deliveryPrice}
+              totalPrice={totalPrice}
+            />
+          </>
+        )}
+      </MainContent>
+
+      <BottomSection>
+        <OrderButton
+          onClick={handleOrderConfirm}
+          disabled={isEmpty || selectedIds.length === 0}
+        >
+          주문 확인
+        </OrderButton>
+      </BottomSection>
+    </PageContainer>
+  );
+};
