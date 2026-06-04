@@ -1,4 +1,4 @@
-import { CartItem } from "../../domain/Types";
+import type { CartItem } from "../../domain/Types";
 
 export interface CartApiInterface {
   getCartItems(): Promise<CartItem[]>;
