@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 
 const HeaderWrapper = styled.header`
   background-color: #000000;
+  width: 100%;
   height: 64px;
   padding: 24px;
   display: flex;

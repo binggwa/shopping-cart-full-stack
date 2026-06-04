@@ -7,6 +7,13 @@ export const ItemContainer = styled.div`
   padding: 20px 0;
 `;
 
+export const Divider = styled.div`
+  width: 100%;
+  height: 1px;
+  background-color: #0000001a;
+  margin-bottom: 12px;
+`;
+
 export const TopRow = styled.div`
   display: flex;
   justify-content: space-between;
