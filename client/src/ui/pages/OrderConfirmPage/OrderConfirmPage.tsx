@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import backIcon from '../../../assets/backIcon.svg';
 import {
   BottomSection,
+  ContainerWrapper,
   MainContent,
   OrderDescription,
   OrderTitle,
@@ -44,23 +45,25 @@ export const OrderConfirmPage = () => {
 
   return (
     <PageContainer>
-      <Header iconSrc={backIcon} onLogoClick={() => navigate('/cart')} />
+      <ContainerWrapper>
+        <Header iconSrc={backIcon} onLogoClick={() => navigate('/cart')} />
 
-      <MainContent>
-        <OrderTitle>주문 확인</OrderTitle>
-        <OrderDescription>
-          {`총 ${idCount}종류의 상품 ${totalSelectedQuantity}개를 주문합니다.\n최종 결제 금액을 확인해 주세요.`}
-        </OrderDescription>
+        <MainContent>
+          <OrderTitle>주문 확인</OrderTitle>
+          <OrderDescription>
+            {`총 ${idCount}종류의 상품 ${totalSelectedQuantity}개를 주문합니다.\n최종 결제 금액을 확인해 주세요.`}
+          </OrderDescription>
 
-        <PriceSection>
-          <PriceLabel>총 결제 금액</PriceLabel>
-          <PriceValue>{totalPrice.toLocaleString()}원</PriceValue>
-        </PriceSection>
-      </MainContent>
+          <PriceSection>
+            <PriceLabel>총 결제 금액</PriceLabel>
+            <PriceValue>{totalPrice.toLocaleString()}원</PriceValue>
+          </PriceSection>
+        </MainContent>
 
-      <BottomSection>
-        <PayButton onClick={handlePayment}>결제하기</PayButton>
-      </BottomSection>
+        <BottomSection>
+          <PayButton onClick={handlePayment}>결제하기</PayButton>
+        </BottomSection>
+      </ContainerWrapper>
     </PageContainer>
   );
 };

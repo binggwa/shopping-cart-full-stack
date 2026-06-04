@@ -4,8 +4,20 @@ export const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background-color: #f5f5f5;
+  align-items: center;
+  width: 100%;
   min-height: 100vh;
+`;
+
+export const ContainerWrapper = styled.div`
+  width: 100%;
+  max-width: 430px;
+  background-color: #ffffff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding-bottom: 104px;
 `;
 
 export const MainContent = styled.main`
@@ -13,7 +25,6 @@ export const MainContent = styled.main`
   flex-direction: column;
   padding: 36px 24px 0 24px;
   flex: 1;
-  padding-bottom: 104px;
 `;
 
 export const TitleSection = styled.div`
@@ -76,6 +87,7 @@ export const BottomSection = styled.div`
   position: fixed;
   bottom: 0;
   width: 100%;
+  max-width: 430px;
 `;
 
 export const OrderButton = styled.button`

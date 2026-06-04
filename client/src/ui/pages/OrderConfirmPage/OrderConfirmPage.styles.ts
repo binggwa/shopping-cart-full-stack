@@ -4,8 +4,20 @@ export const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   min-height: 100vh;
+  width: 100%;
+`;
+
+export const ContainerWrapper = styled.div`
+  width: 100%;
+  max-width: 430px;
+  background-color: #ffffff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  position: relative;
+  padding-bottom: 64px;
 `;
 
 export const MainContent = styled.main`
@@ -14,7 +26,6 @@ export const MainContent = styled.main`
   align-items: center;
   justify-content: center;
   flex: 1;
-  padding-bottom: 64px;
 `;
 
 export const OrderTitle = styled.p`
@@ -57,6 +68,7 @@ export const BottomSection = styled.div`
   position: fixed;
   bottom: 0;
   width: 100%;
+  max-width: 430px;
 `;
 
 export const PayButton = styled.button`

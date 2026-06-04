@@ -8,6 +8,7 @@ import {
   BottomSection,
   CartListContainer,
   CheckboxLabel,
+  ContainerWrapper,
   EmptyStateWrapper,
   MainContent,
   OrderButton,
@@ -55,70 +56,72 @@ export const CartPage = () => {
 
   return (
     <PageContainer>
-      <Header onLogoClick={() => navigate('/')} />
+      <ContainerWrapper>
+        <Header onLogoClick={() => navigate('/')} />
 
-      <MainContent>
-        <TitleSection>
-          <PageTitle>장바구니</PageTitle>
-          {currentStatus === 'success' && !isEmpty && (
-            <SubTitle>
-              현재 {cartItems.length}종류의 상품이 담겨있습니다.
-            </SubTitle>
+        <MainContent>
+          <TitleSection>
+            <PageTitle>장바구니</PageTitle>
+            {currentStatus === 'success' && !isEmpty && (
+              <SubTitle>
+                현재 {cartItems.length}종류의 상품이 담겨있습니다.
+              </SubTitle>
+            )}
+          </TitleSection>
+
+          {/* 로딩 중 스켈레톤 구현 필요*/}
+          {currentStatus === 'loading' && (
+            <EmptyStateWrapper>로딩 스켈레톤</EmptyStateWrapper>
           )}
-        </TitleSection>
 
-        {/* 로딩 중 스켈레톤 구현 필요*/}
-        {currentStatus === 'loading' && (
-          <EmptyStateWrapper>로딩 스켈레톤</EmptyStateWrapper>
-        )}
+          {currentStatus === 'error' && (
+            <EmptyStateWrapper>에러</EmptyStateWrapper>
+          )}
 
-        {currentStatus === 'error' && (
-          <EmptyStateWrapper>에러</EmptyStateWrapper>
-        )}
+          {currentStatus === 'success' && isEmpty && (
+            <EmptyStateWrapper>
+              장바구니에 담은 상품이 없습니다.
+            </EmptyStateWrapper>
+          )}
 
-        {currentStatus === 'success' && isEmpty && (
-          <EmptyStateWrapper>
-            장바구니에 담은 상품이 없습니다.
-          </EmptyStateWrapper>
-        )}
+          {currentStatus === 'success' && !isEmpty && (
+            <>
+              <SelectAllRow>
+                <Checkbox checked={isAllSelected} onChange={toggleAll} />
+                <CheckboxLabel>전체 선택</CheckboxLabel>
+              </SelectAllRow>
 
-        {currentStatus === 'success' && !isEmpty && (
-          <>
-            <SelectAllRow>
-              <Checkbox checked={isAllSelected} onChange={toggleAll} />
-              <CheckboxLabel>전체 선택</CheckboxLabel>
-            </SelectAllRow>
+              <CartListContainer>
+                {cartItems.map((item) => (
+                  <CartItem
+                    key={item.cartItemId}
+                    item={item}
+                    isSelected={selectedIds.includes(item.cartItemId)}
+                    onToggle={toggleSelection}
+                    onQuantityChange={changeQuantity}
+                    onDelete={removeCartItem}
+                  />
+                ))}
+              </CartListContainer>
 
-            <CartListContainer>
-              {cartItems.map((item) => (
-                <CartItem
-                  key={item.cartItemId}
-                  item={item}
-                  isSelected={selectedIds.includes(item.cartItemId)}
-                  onToggle={toggleSelection}
-                  onQuantityChange={changeQuantity}
-                  onDelete={removeCartItem}
-                />
-              ))}
-            </CartListContainer>
+              <CartSummary
+                totalProductPrice={totalProductPrice}
+                deliveryPrice={deliveryPrice}
+                totalPrice={totalPrice}
+              />
+            </>
+          )}
+        </MainContent>
 
-            <CartSummary
-              totalProductPrice={totalProductPrice}
-              deliveryPrice={deliveryPrice}
-              totalPrice={totalPrice}
-            />
-          </>
-        )}
-      </MainContent>
-
-      <BottomSection>
-        <OrderButton
-          onClick={handleOrderConfirm}
-          disabled={isEmpty || selectedIds.length === 0}
-        >
-          주문 확인
-        </OrderButton>
-      </BottomSection>
+        <BottomSection>
+          <OrderButton
+            onClick={handleOrderConfirm}
+            disabled={isEmpty || selectedIds.length === 0}
+          >
+            주문 확인
+          </OrderButton>
+        </BottomSection>
+      </ContainerWrapper>
     </PageContainer>
   );
 };
