@@ -3,9 +3,11 @@ import styled from '@emotion/styled';
 export const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
   min-height: 100vh;
   width: 100%;
+  overflow-y: scroll;
 `;
 
 export const ContainerWrapper = styled.div`

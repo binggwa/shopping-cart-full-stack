@@ -16,6 +16,7 @@ export const ContainerWrapper = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  flex: 1;
   position: relative;
   padding-bottom: 104px;
 `;
