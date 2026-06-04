@@ -5,28 +5,25 @@ const FREE_DELIVERY_LIMIT = 100000;
 const DELIVERY_PRICE = 3000;
 
 export const useCartItemSelection = (cartItems: CartItem[]) => {
-  const [selectedIds, setSelectedIds] = useState<number[]>(() => {
+  const [selectedIds, setSelectedIds] = useState<number[] | null>(() => {
     const savedSelection = localStorage.getItem("cart_item_selection");
-    return savedSelection ? JSON.parse(savedSelection) : [];
+    return savedSelection ? JSON.parse(savedSelection) : null;
   });
 
-  useEffect(() => {
-    localStorage.setItem("cart_item_selection", JSON.stringify(selectedIds));
-  }, [selectedIds]);
+  const actualSelectedIds = selectedIds === null ? cartItems.map((item) => item.cartItemId) : selectedIds;
 
   useEffect(() => {
-    if (cartItems.length > 0 && selectedIds.length === 0) {
-      setSelectedIds(cartItems.map((item) => item.cartItemId));
+    if (selectedIds !== null) {
+      localStorage.setItem("cart_item_selection", JSON.stringify(selectedIds));
     }
-  }, [cartItems]);
+  }, [selectedIds]);
 
   const toggleSelection = (id: number) => {
     setSelectedIds((prevSelectedIds) => {
-      if (prevSelectedIds.includes(id)) {
-        return prevSelectedIds.filter((prevId) => prevId !== id);
-      } else {
-        return [...prevSelectedIds, id];
-      }
+      const base = prevSelectedIds === null ? actualSelectedIds : prevSelectedIds;
+      return base.includes(id)
+        ? base.filter((selectedId) => selectedId !== id)
+        : [...base, id];
     });
   };
 
@@ -38,8 +35,8 @@ export const useCartItemSelection = (cartItems: CartItem[]) => {
     }
   };
 
-  const selectedItems = cartItems.filter((item) => selectedIds.includes(item.cartItemId));
-  const isAllSelected = cartItems.length > 0 && selectedIds.length === cartItems.length;
+  const selectedItems = cartItems.filter((item) => actualSelectedIds.includes(item.cartItemId));
+  const isAllSelected = cartItems.length > 0 && actualSelectedIds.length === cartItems.length;
 
   const totalProductPrice = selectedItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
 
@@ -54,7 +51,7 @@ export const useCartItemSelection = (cartItems: CartItem[]) => {
   const totalPrice = totalProductPrice + deliveryPrice;
 
   return {
-    selectedIds,
+    selectedIds: actualSelectedIds,
     toggleSelection,
     toggleAll,
     isAllSelected,
