@@ -2,7 +2,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { BrowserRouter } from "react-router-dom";
 import { http, HttpResponse } from "msw";
-import { vi } from "vitest";
+import { vi, describe, it, expect, afterEach } from "vitest";
 import { CartPage } from "./CartPage";
 import { server } from "../../../mocks/server";
 

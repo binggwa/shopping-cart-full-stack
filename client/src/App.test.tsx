@@ -1,12 +1,16 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { vi } from 'vitest';
+import { vi, describe, it, expect, afterEach } from 'vitest';
 import { App } from "./App";
 
 const mockAlert = vi.fn();
 window.alert = mockAlert;
 
 describe("라우팅 및 주문 확인 페이지 통합 테스트", () => {
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
+
   it("주문 확인 버튼을 누르면 정확한 데이터와 함께 order-confirm 페이지로 넘어간다.", async () => {
     const user = userEvent.setup();
     window.history.pushState({}, 'Cart Page', '/cart');
