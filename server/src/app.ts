@@ -18,7 +18,7 @@ export const runApp = (repositories: Repositories): express.Express => {
   const app = express();
   
   const corsOptions = {
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "https://shopping-cart-full-stack-binggwa.up.railway.app"],
     credentials: true,
   };
   
