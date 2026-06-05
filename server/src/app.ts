@@ -1,5 +1,5 @@
 import express from "express";
-import cors from 'cors';
+import cors from "cors";
 import { ProductRepositoryInterface } from "./repositories/interfaces/ProductRepositoryInterface";
 import { CartRepositoryInterface } from "./repositories/interfaces/CartRepositoryInterface";
 import ProductService from "./service/ProductService";
@@ -16,24 +16,37 @@ interface Repositories {
 
 export const runApp = (repositories: Repositories): express.Express => {
   const app = express();
-  
+
   const corsOptions = {
-    origin: ["http://localhost:5173", "https://shopping-cart-full-stack-binggwa.up.railway.app"],
+    origin: [
+      "http://localhost:5173",
+      "https://shopping-cart-full-stack-binggwa.up.railway.app",
+      "https://shopping-cart-full-stack-git-step2-binggwas-projects.vercel.app",
+    ],
     credentials: true,
   };
-  
+
   app.use(cors(corsOptions));
   app.use(express.json());
 
-  const productService = new ProductService(repositories.productRepo, repositories.cartRepo);
-  const cartService = new CartService(repositories.productRepo, repositories.cartRepo);
+  const productService = new ProductService(
+    repositories.productRepo,
+    repositories.cartRepo,
+  );
+  const cartService = new CartService(
+    repositories.productRepo,
+    repositories.cartRepo,
+  );
 
   app.use("/cart", createCartRouter(new CartController(cartService)));
-  app.use("/products", createProductRouter(new ProductController(productService)));
-  
+  app.use(
+    "/products",
+    createProductRouter(new ProductController(productService)),
+  );
+
   app.get("/health", (_req, res) => {
     res.json({ status: "ok" });
   });
 
   return app;
-}
+};
