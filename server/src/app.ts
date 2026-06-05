@@ -21,7 +21,7 @@ export const runApp = (repositories: Repositories): express.Express => {
     origin: [
       "http://localhost:5173",
       "https://shopping-cart-full-stack-binggwa.up.railway.app",
-      "https://shopping-cart-full-stack-git-step2-binggwas-projects.vercel.app",
+      "https://shopping-cart-full-stack-psi.vercel.app",
     ],
     credentials: true,
   };
