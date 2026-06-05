@@ -1,4 +1,3 @@
-// src/ui/components/common/Checkbox.tsx
 import styled from '@emotion/styled';
 
 const StyledCheckboxBox = styled.div<{ isChecked: boolean }>`

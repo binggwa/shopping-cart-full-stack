@@ -1,7 +1,7 @@
 import type { CartItem } from "../../domain/Types";
 import type { CartApiInterface } from "./CartApiInterface";
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
 export const fetchCartApi: CartApiInterface = {
   getCartItems: async (): Promise<CartItem[]> => {

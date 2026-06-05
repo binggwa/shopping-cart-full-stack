@@ -1,4 +1,3 @@
-// src/ui/pages/CartPage/CartPage.stories.tsx
 import { MemoryRouter } from 'react-router-dom';
 import { http, HttpResponse, delay } from 'msw';
 import { CartPage } from './CartPage';
