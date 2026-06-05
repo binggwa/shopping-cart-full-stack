@@ -74,7 +74,9 @@ export const CartPage = () => {
           )}
 
           {currentStatus === 'error' && (
-            <EmptyStateWrapper>에러가 발생했습니다!! 새로고침해주세요!!</EmptyStateWrapper>
+            <EmptyStateWrapper>
+              {error}
+            </EmptyStateWrapper>
           )}
 
           {currentStatus === 'success' && isEmpty && (

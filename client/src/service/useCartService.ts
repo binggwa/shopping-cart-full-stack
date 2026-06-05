@@ -15,7 +15,7 @@ export const useCartService = (api: CartApiInterface) => {
       setCartItems(data);
     } catch (e) {
       setError(
-        e instanceof Error ? e.message : "장바구니를 불러오는 데 실패했습니다.",
+        e instanceof Error ? e.message : "장바구니 목록을 불러오지 못했습니다.",
       );
     } finally {
       setIsLoading(false);

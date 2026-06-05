@@ -90,7 +90,7 @@ describe("장바구니 페이지 통합 테스트", () => {
 
     renderCartPage();
 
-    expect(await screen.findByText(/에러/)).toBeInTheDocument();
+    expect(await screen.findByText(/못했습니다/)).toBeInTheDocument();
   });
 
   it("장바구니 아이템 수량 변경 실패 시 에러 경고창을 띄운다.", async () => {
