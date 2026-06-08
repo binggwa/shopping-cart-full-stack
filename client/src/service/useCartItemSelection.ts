@@ -47,13 +47,11 @@ export const useCartItemSelection = (cartItems: CartItem[]) => {
   const totalSelectedQuantity = selectedItems.reduce((sum, item) => sum + item.quantity, 0);
   const totalProductPrice = selectedItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
 
-  const calculateDeliveryPrice = () => {
+  const deliveryPrice = (() => {
     if (totalProductPrice === 0) return 0;
     if (totalProductPrice >= CART_RULES.FREE_DELIVERY_LIMIT) return 0;
     return CART_RULES.DELIVERY_PRICE;
-  }
-
-  const deliveryPrice = calculateDeliveryPrice();
+  })();
 
   const totalPrice = totalProductPrice + deliveryPrice;
 
