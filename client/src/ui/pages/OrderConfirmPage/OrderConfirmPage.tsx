@@ -1,6 +1,5 @@
-import { useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import backIcon from '../../../assets/backIcon.svg';
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import backIcon from "../../../assets/backIcon.svg";
 import {
   BottomSection,
   ContainerWrapper,
@@ -12,8 +11,8 @@ import {
   PriceLabel,
   PriceSection,
   PriceValue,
-} from './OrderConfirmPage.styles';
-import { Header } from '../../components/Header/Header';
+} from "./OrderConfirmPage.styles";
+import { Header } from "../../components/Header/Header";
 
 interface OrderConfirmState {
   selectedIds: number[];
@@ -27,26 +26,27 @@ export const OrderConfirmPage = () => {
 
   const state = location.state as OrderConfirmState | null;
 
-  useEffect(() => {
-    if (!state || state.selectedIds.length === 0) {
-      alert('주문 정보가 존재하지 않습니다. 장바구니로 돌아갑니다.');
-      navigate('/cart', { replace: true });
-    }
-  }, [state, navigate]);
-
-  if (!state) return null;
+  if (!state || state.selectedIds.length === 0) {
+    return (
+      <Navigate
+        to="/cart"
+        replace
+        state={{ error: "비정상적인 접근입니다!" }}
+      />
+    );
+  }
 
   const { selectedIds, totalSelectedQuantity, totalPrice } = state;
   const idCount = selectedIds.length;
 
   const handlePayment = () => {
-    alert('결제가 완료되었습니다!');
+    alert("결제가 완료되었습니다!");
   };
 
   return (
     <PageContainer>
       <ContainerWrapper>
-        <Header iconSrc={backIcon} onLogoClick={() => navigate('/cart')} />
+        <Header iconSrc={backIcon} onLogoClick={() => navigate("/cart")} />
 
         <MainContent>
           <OrderTitle>주문 확인</OrderTitle>
