@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { CartItem } from "../domain/Types";
-import { CART_RULES } from "../domain/constants";
+import { calculateDeliveryPrice, calculateTotalPrice, calculateTotalProductPrice, calculateTotalQuantity } from "../domain/cartCalculator";
 
 export const useCartItemSelection = (cartItems: CartItem[]) => {
   const [selectedIds, setSelectedIds] = useState<number[] | null>(() => {
@@ -54,16 +54,10 @@ export const useCartItemSelection = (cartItems: CartItem[]) => {
   const selectedItems = cartItems.filter((item) => actualSelectedIds.includes(item.cartItemId));
   const isAllSelected = cartItems.length > 0 && actualSelectedIds.length === cartItems.length;
 
-  const totalSelectedQuantity = selectedItems.reduce((sum, item) => sum + item.quantity, 0);
-  const totalProductPrice = selectedItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
-
-  const deliveryPrice = (() => {
-    if (totalProductPrice === 0) return 0;
-    if (totalProductPrice >= CART_RULES.FREE_DELIVERY_LIMIT) return 0;
-    return CART_RULES.DELIVERY_PRICE;
-  })();
-
-  const totalPrice = totalProductPrice + deliveryPrice;
+  const totalSelectedQuantity = calculateTotalQuantity(selectedItems);
+  const totalProductPrice = calculateTotalProductPrice(selectedItems);
+  const deliveryPrice = calculateDeliveryPrice(totalProductPrice);
+  const totalPrice = calculateTotalPrice(totalProductPrice, deliveryPrice);
 
   return {
     selectedIds: actualSelectedIds,
