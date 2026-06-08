@@ -21,7 +21,7 @@ import {
 import { Header } from '../../components/Header/Header';
 import { Checkbox } from '../../components/Checkbox/Checkbox';
 
-type PageStatus = 'idle' | 'loading' | 'success' | 'error';
+type PageStatus = 'loading' | 'success' | 'error';
 
 export const CartPage = () => {
   const navigate = useNavigate();
