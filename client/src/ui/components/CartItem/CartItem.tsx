@@ -1,5 +1,5 @@
-import { Checkbox } from '../Checkbox/Checkbox';
-import type { CartItem as CartItemType } from '../../../domain/Types';
+import { Checkbox } from "../Checkbox/Checkbox";
+import type { CartItem as CartItemType } from "../../../domain/Types";
 import {
   ContentRow,
   DeleteButton,
@@ -14,7 +14,8 @@ import {
   TextGroup,
   Thumbnail,
   TopRow,
-} from './CartItem.styles';
+} from "./CartItem.styles";
+import { CART_RULES } from "../../../domain/constants";
 
 interface CartItemProps {
   item: CartItemType;
@@ -23,9 +24,6 @@ interface CartItemProps {
   onQuantityChange: (id: number, quantity: number) => void;
   onDelete: (id: number) => void;
 }
-
-const QUANTITY_LOWER_LIMIT = 1;
-const QUANTITY_UPPER_LIMIT = 99;
 
 export const CartItem = ({
   item,
@@ -37,12 +35,12 @@ export const CartItem = ({
   const { cartItemId, quantity, product } = item;
 
   const handleDecrease = () => {
-    if (quantity > QUANTITY_LOWER_LIMIT)
+    if (quantity > CART_RULES.MIN_QUANTITY)
       onQuantityChange(cartItemId, quantity - 1);
   };
 
   const handleIncrease = () => {
-    if (quantity < QUANTITY_UPPER_LIMIT)
+    if (quantity < CART_RULES.MAX_QUANTITY)
       onQuantityChange(cartItemId, quantity + 1);
   };
 
@@ -65,11 +63,17 @@ export const CartItem = ({
           </TextGroup>
 
           <StepperContainer>
-            <StepperButton onClick={handleDecrease} disabled={quantity <= 1}>
+            <StepperButton
+              onClick={handleDecrease}
+              disabled={quantity <= CART_RULES.MIN_QUANTITY}
+            >
               −
             </StepperButton>
             <QuantityDisplay>{quantity}</QuantityDisplay>
-            <StepperButton onClick={handleIncrease} disabled={quantity >= 99}>
+            <StepperButton
+              onClick={handleIncrease}
+              disabled={quantity >= CART_RULES.MAX_QUANTITY}
+            >
               +
             </StepperButton>
           </StepperContainer>

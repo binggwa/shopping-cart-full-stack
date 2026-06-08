@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import type { CartItem } from "../domain/Types";
-
-const FREE_DELIVERY_LIMIT = 100000;
-const DELIVERY_PRICE = 3000;
+import { CART_RULES } from "../domain/constants";
 
 export const useCartItemSelection = (cartItems: CartItem[]) => {
   const [selectedIds, setSelectedIds] = useState<number[] | null>(() => {
@@ -43,8 +41,8 @@ export const useCartItemSelection = (cartItems: CartItem[]) => {
 
   const calculateDeliveryPrice = () => {
     if (totalProductPrice === 0) return 0;
-    if (totalProductPrice >= FREE_DELIVERY_LIMIT) return 0;
-    return DELIVERY_PRICE;
+    if (totalProductPrice >= CART_RULES.FREE_DELIVERY_LIMIT) return 0;
+    return CART_RULES.DELIVERY_PRICE;
   }
 
   const deliveryPrice = calculateDeliveryPrice();

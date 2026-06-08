@@ -1,0 +1,6 @@
+export const CART_RULES = {
+  MIN_QUANTITY: 1,
+  MAX_QUANTITY: 99,
+  FREE_DELIVERY_LIMIT: 100000,
+  DELIVERY_PRICE: 3000,
+} as const;

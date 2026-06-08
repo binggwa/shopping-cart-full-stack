@@ -1,4 +1,5 @@
-import infoIcon from '../../../assets/InfoIcon.svg';
+import infoIcon from "../../../assets/InfoIcon.svg";
+import { CART_RULES } from "../../../domain/constants";
 import {
   Divider,
   InfoIconImg,
@@ -7,7 +8,7 @@ import {
   PriceRow,
   SummaryContainer,
   Value,
-} from './CartSummary.styles';
+} from "./CartSummary.styles";
 
 interface CartSummaryProps {
   totalProductPrice: number;
@@ -24,7 +25,10 @@ export const CartSummary = ({
     <SummaryContainer>
       <InfoRow>
         <InfoIconImg src={infoIcon} alt="info" />
-        <span>총 주문 금액이 100,000원 이상일 경우 무료 배송됩니다.</span>
+        <span>
+          총 주문 금액이 {CART_RULES.FREE_DELIVERY_LIMIT.toLocaleString()}원 이상일 경우 무료
+          배송됩니다.
+        </span>
       </InfoRow>
 
       <Divider />
