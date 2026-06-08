@@ -36,6 +36,13 @@ export const useCartItemSelection = (cartItems: CartItem[]) => {
     });
   };
 
+  const deselectItem = (id: number) => {
+    setSelectedIds((prevSelectedIds) => {
+      if (prevSelectedIds === null) return actualSelectedIds.filter(selectedId => selectedId !== id);
+      return prevSelectedIds.filter((selectedId) => selectedId !== id);
+    });
+  };
+
   const toggleAll = (isSelected: boolean) => {
     if (isSelected) {
       setSelectedIds(cartItems.map((item) => item.cartItemId));
@@ -62,6 +69,7 @@ export const useCartItemSelection = (cartItems: CartItem[]) => {
     selectedIds: actualSelectedIds,
     toggleSelection,
     toggleAll,
+    deselectItem,
     isAllSelected,
     totalSelectedQuantity,
     totalProductPrice,

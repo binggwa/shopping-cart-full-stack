@@ -33,6 +33,7 @@ export const CartPage = () => {
     selectedIds,
     toggleSelection,
     toggleAll,
+    deselectItem,
     isAllSelected,
     totalSelectedQuantity,
     totalProductPrice,
@@ -52,6 +53,11 @@ export const CartPage = () => {
     navigate('/order-confirm', {
       state: { selectedIds, totalSelectedQuantity, totalPrice },
     });
+  };
+
+  const handleRemoveItem = async (id: number) => {
+    await removeCartItem(id);
+    deselectItem(id); 
   };
 
   return (
@@ -100,7 +106,7 @@ export const CartPage = () => {
                     isSelected={selectedIds.includes(item.cartItemId)}
                     onSelectionChange={toggleSelection}
                     onQuantityChange={changeQuantity}
-                    onDelete={removeCartItem}
+                    onDelete={handleRemoveItem}
                   />
                 ))}
               </CartListContainer>
