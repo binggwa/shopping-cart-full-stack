@@ -26,7 +26,7 @@ export const Default = () => {
     <CartItem
       item={{ ...mockItem, quantity }}
       isSelected={selected}
-      onToggle={() => setSelected(!selected)}
+      onSelectionChange={() => setSelected(!selected)}
       onQuantityChange={(_, newQty) => setQuantity(newQty)}
       onDelete={() => alert('삭제 버튼 클릭!')}
     />
