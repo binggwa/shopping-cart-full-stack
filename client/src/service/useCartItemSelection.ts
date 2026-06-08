@@ -5,7 +5,15 @@ import { CART_RULES } from "../domain/constants";
 export const useCartItemSelection = (cartItems: CartItem[]) => {
   const [selectedIds, setSelectedIds] = useState<number[] | null>(() => {
     const savedSelection = localStorage.getItem("cart_item_selection");
-    return savedSelection ? JSON.parse(savedSelection) : null;
+    if (!savedSelection) return null;
+    
+    try {
+      const parsedSelection = JSON.parse(savedSelection);
+      return Array.isArray(parsedSelection) ? parsedSelection : null;
+    } catch (e) {
+      localStorage.removeItem("cart_item_selection");
+      return null;
+    }
   });
 
   const actualSelectedIds = selectedIds === null ? cartItems.map((item) => item.cartItemId) : selectedIds;
