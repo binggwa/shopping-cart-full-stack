@@ -24,6 +24,10 @@ export const useCartService = (api: CartApiInterface) => {
 
   useEffect(() => {
     loadCartItems();
+    
+    const handleFocus = () => loadCartItems();
+    window.addEventListener("focus", handleFocus);
+    return () => window.removeEventListener("focus", handleFocus);
   }, [loadCartItems]);
 
   const changeQuantity = async (id: number, quantity: number) => {
