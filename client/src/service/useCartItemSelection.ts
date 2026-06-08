@@ -24,12 +24,15 @@ export const useCartItemSelection = (cartItems: CartItem[]) => {
     }
   }, [selectedIds]);
 
-  const toggleSelection = (id: number) => {
+  const toggleSelection = (id: number, isChecked: boolean) => {
     setSelectedIds((prevSelectedIds) => {
       const base = prevSelectedIds === null ? actualSelectedIds : prevSelectedIds;
-      return base.includes(id)
-        ? base.filter((selectedId) => selectedId !== id)
-        : [...base, id];
+
+      if (isChecked) {
+        return base.includes(id) ? base : [...base, id];
+      } else {
+        return base.filter((selectedId) => selectedId !== id);
+      }
     });
   };
 

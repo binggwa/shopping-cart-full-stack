@@ -20,7 +20,7 @@ import { CART_RULES } from "../../../domain/constants";
 interface CartItemProps {
   item: CartItemType;
   isSelected: boolean;
-  onToggle: (id: number) => void;
+  onSelectionChange: (id: number, isChecked: boolean) => void;
   onQuantityChange: (id: number, quantity: number) => void;
   onDelete: (id: number) => void;
 }
@@ -28,7 +28,7 @@ interface CartItemProps {
 export const CartItem = ({
   item,
   isSelected,
-  onToggle,
+  onSelectionChange,
   onQuantityChange,
   onDelete,
 }: CartItemProps) => {
@@ -49,7 +49,7 @@ export const CartItem = ({
       <Divider />
 
       <TopRow>
-        <Checkbox checked={isSelected} onChange={() => onToggle(cartItemId)} />
+        <Checkbox checked={isSelected} onChange={(isChecked) => onSelectionChange(cartItemId, isChecked)} />
         <DeleteButton onClick={() => onDelete(cartItemId)}>삭제</DeleteButton>
       </TopRow>
 

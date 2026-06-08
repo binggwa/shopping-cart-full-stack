@@ -98,7 +98,7 @@ export const CartPage = () => {
                     key={item.cartItemId}
                     item={item}
                     isSelected={selectedIds.includes(item.cartItemId)}
-                    onToggle={toggleSelection}
+                    onSelectionChange={toggleSelection}
                     onQuantityChange={changeQuantity}
                     onDelete={removeCartItem}
                   />
