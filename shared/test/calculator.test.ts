@@ -1,5 +1,5 @@
-import { calculateBogoDiscount, calculateOrderAmount } from "../calculator";
-import { PreorderItem } from "../types";
+import { calculateBaseShippingFee, calculateBogoDiscount, calculateOrderAmount } from "../calculator";
+import { DELIVERY_RULES, PreorderItem } from "../types";
 import { describe, it, expect } from "vitest";
 
 describe("기본 상품 주문 금액 계산: calculateOrderAmount", () => {
@@ -75,5 +75,27 @@ describe("BOGO 2+1 쿠폰 할인액 계산: calculateBogoDiscount", () => {
     ];
 
     expect(calculateBogoDiscount(items)).toBe(80000);
+  });
+});
+
+describe('배송비 계산: calculateBaseShippingFee', () => {
+  it('주문 금액이 0원이면 배송비는 0원', () => {
+    expect(calculateBaseShippingFee(0, false)).toBe(0);
+  });
+
+  it('주문 금액이 무료배송기준 미만, 일반 지역일 경우 기본 배송비', () => {
+    const amount = DELIVERY_RULES.FREE_DELIVERY_LIMIT - 1;
+    expect(calculateBaseShippingFee(amount, false)).toBe(3000);
+  });
+
+  it('주문 금액이 무료배송기준 이상이면 지역에 상관없이 배송비가 0원', () => {
+    const amount = DELIVERY_RULES.FREE_DELIVERY_LIMIT;
+    expect(calculateBaseShippingFee(amount, false)).toBe(0);
+    expect(calculateBaseShippingFee(amount, true)).toBe(0);
+  });
+
+  it('주문 금액이 무료배송기준 미만이고, 도서산간 지역일 경우 기본 배송비에 도서산간추가금이 붙어 6000원', () => {
+    const amount = DELIVERY_RULES.FREE_DELIVERY_LIMIT - 1;
+    expect(calculateBaseShippingFee(amount, true)).toBe(6000);
   });
 });
