@@ -43,6 +43,16 @@ export interface CalculatedPrice {
   totalPaymentAmount: number;
 }
 
+export interface GiftItem {
+  productId: number;
+  giftQuantity: number;
+}
+
+export interface OrderReceipt {
+  priceSummary: CalculatedPrice;
+  giftItems: GiftItem[];
+}
+
 export const DELIVERY_RULES = {
   FREE_DELIVERY_LIMIT: 100000,
   BASE_DELIVERY_FEE: 3000,
