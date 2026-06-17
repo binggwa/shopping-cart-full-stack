@@ -1,7 +1,8 @@
 {
   "name": "@cart/shared",
   "version": "1.0.0",
-  "main": "index.ts",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
   "scripts": {
     "test": "vitest run"
   },
