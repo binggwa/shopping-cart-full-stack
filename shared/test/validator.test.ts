@@ -62,4 +62,28 @@ describe("쿠폰 유효성 검증기: validateCoupon", () => {
 
     expect(validateCoupon(dummyItems, bogoCoupon, new Date())).toBe(false);
   });
+
+  it("[만료일 검증] 쿠폰의 만료일이 지났다면 false를 반환한다", () => {
+    const expiredCoupon: Coupon = {
+      couponId: 99,
+      name: "만료된 쿠폰",
+      type: "DISCOUNT",
+      expirationDate: "2026-06-16",
+      condition: {},
+      benefit: { discountAmount: 1000 },
+    };
+    const validCoupon: Coupon = {
+      couponId: 100,
+      name: "만료안된 쿠폰",
+      type: "DISCOUNT",
+      expirationDate: "2099-12-31",
+      condition: {},
+      benefit: { discountAmount: 1000 },
+    };
+
+    const mockCurrentTime = new Date(2026, 5, 17, 0, 0, 0);
+
+    expect(validateCoupon(dummyItems, expiredCoupon, mockCurrentTime)).toBe(false);
+    expect(validateCoupon(dummyItems, validCoupon, mockCurrentTime)).toBe(true);
+  });
 });
