@@ -3,8 +3,8 @@ import {
   calculateBogoDiscount,
   calculateOrderAmount,
   generateOrderReceipt,
-} from "../calculator";
-import { Coupon, DELIVERY_RULES, PreorderItem } from "../types";
+} from "../src/calculator";
+import { Coupon, DELIVERY_RULES, PreorderItem } from "../src/types";
 import { describe, it, expect } from "vitest";
 
 describe("기본 상품 주문 금액 계산: calculateOrderAmount", () => {
