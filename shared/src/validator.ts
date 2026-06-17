@@ -8,6 +8,15 @@ export const validateCoupon = (
 ): boolean => {
   if (items.length === 0) return false;
 
+  if (coupon.expirationDate) {
+    const [year, month, day] = coupon.expirationDate.split("-").map(Number);
+    const expirationLimit = new Date(year, month - 1, day, 23, 59, 59, 999);
+
+    if (currentTime.getTime() > expirationLimit.getTime()) {
+      return false;
+    }
+  }
+
   const orderAmount = calculateOrderAmount(items);
   const { minOrderLimit, minBogoQuantity, validTime } = coupon.condition;
 
