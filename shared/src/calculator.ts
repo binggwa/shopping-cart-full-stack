@@ -43,7 +43,7 @@ export const generateOrderReceipt = (
   items: PreorderItem[],
   selectedCoupons: Coupon[],
   isRemoteArea: boolean,
-  serverTime: Date,
+  currentTime: Date,
 ): OrderReceipt => {
   const orderAmount = calculateOrderAmount(items);
   const discountCoupons = selectedCoupons.filter(
@@ -88,7 +88,7 @@ export const generateOrderReceipt = (
   const amountAfterFixed = orderAmount - fixedDiscount;
 
   const rateDiscount = rateCoupons.reduce((sum, coupon) => {
-    const hour = serverTime.getHours();
+    const hour = currentTime.getHours();
     const start = coupon.condition.validTime?.startHour ?? 4;
     const end = coupon.condition.validTime?.endHour ?? 7;
     const rate = coupon.benefit.discountRate ?? 0;
