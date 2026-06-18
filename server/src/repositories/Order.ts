@@ -1,10 +1,6 @@
-import { CalculatedPrice, GiftItem } from "@cart/shared";
+import { CalculatedPrice, GiftItem, PreorderItem } from "@cart/shared";
 
-export interface OrderItemSnapshot {
-  productId: number;
-  name: string;
-  price: number;
-  quantity: number;
+export interface OrderItemSnapshot extends PreorderItem {
 }
 
 export interface Order {

@@ -2,16 +2,14 @@ import {
   generateOrderReceipt,
   validateCoupon,
   CalculatedPrice,
-  OrderReceipt,
 } from "@cart/shared";
-import {
-  InvalidError,
-  NotFoundError,
-  ConflictError,
-} from "../errors/CustomErrorClass";
+import { InvalidError, ConflictError } from "../errors/CustomErrorClass";
 import { ERROR_MESSAGE } from "../errors/ErrorMessage";
 import { ProductRepositoryInterface } from "../repositories/interfaces/ProductRepositoryInterface";
 import { CouponRepositoryInterface } from "../repositories/interfaces/CouponRepositoryInterface";
+import { OrderRepositoryInterface } from "../repositories/interfaces/OrderRepositoryInterface";
+import { CartRepositoryInterface } from "../repositories/interfaces/CartRepositoryInterface";
+import { Order } from "../repositories/Order";
 
 export interface OrderRequestPayload {
   items: { productId: number; quantity: number }[];
@@ -23,22 +21,34 @@ export interface OrderRequestPayload {
 export default class OrderService {
   #productRepo: ProductRepositoryInterface;
   #couponRepo: CouponRepositoryInterface;
+  #orderRepo: OrderRepositoryInterface;
+  #cartRepo: CartRepositoryInterface;
 
   constructor(
     productRepo: ProductRepositoryInterface,
     couponRepo: CouponRepositoryInterface,
+    orderRepo: OrderRepositoryInterface,
+    cartRepo: CartRepositoryInterface,
   ) {
     this.#productRepo = productRepo;
     this.#couponRepo = couponRepo;
+    this.#orderRepo = orderRepo;
+    this.#cartRepo = cartRepo;
   }
 
-  createOrder(payload: OrderRequestPayload): OrderReceipt {
+  createOrder(payload: OrderRequestPayload): Order {
     const serverTime = new Date();
 
     const serverItems = payload.items.map((item) => {
       const product = this.#productRepo.findById(item.productId);
       if (!product) throw new ConflictError(ERROR_MESSAGE.NO_MATCH_PRODUCT);
-      return { ...product, quantity: item.quantity };
+      return {
+        productId: product.productId,
+        name: product.name,
+        price: product.price,
+        thumbnailUrl: product.thumbnailUrl,
+        quantity: item.quantity,
+      };
     });
 
     const serverCoupons = payload.couponIds.map((id) => {
@@ -66,7 +76,17 @@ export default class OrderService {
       serverReceipt.priceSummary,
     );
 
-    return serverReceipt;
+    const savedOrder = this.#orderRepo.save({
+      items: serverItems,
+      priceSummary: serverReceipt.priceSummary,
+      giftItems: serverReceipt.giftItems,
+    });
+
+    payload.items.forEach((item) => {
+      this.#cartRepo.deleteByProductId(item.productId);
+    });
+
+    return savedOrder;
   }
 
   #verifyExpectedPrice(
