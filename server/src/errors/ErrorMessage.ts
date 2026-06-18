@@ -16,4 +16,6 @@ export const ERROR_MESSAGE = {
     "결제 요청 금액이 일치하지 않습니다. 그 사이 상품 가격이나 쿠폰 혜택이 변동되었을 수 있습니다. 새로고침 후 다시 시도해주세요.",
   DETAIL_AMOUNT_CONFLICT:
     "할인 내역 또는 배송비 계산 결과가 서버와 일치하지 않습니다.",
+  NO_ORDER: "해당 주문 내역을 찾을 수 없습니다.",
+  NO_EXPECTED_PRICE: "교차 검증을 위한 예상 결제 금액 정보가 누락되었습니다."
 } as const;
