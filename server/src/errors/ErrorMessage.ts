@@ -19,4 +19,5 @@ export const ERROR_MESSAGE = {
   NO_ORDER: "해당 주문 내역을 찾을 수 없습니다.",
   NO_EXPECTED_PRICE: "교차 검증을 위한 예상 결제 금액 정보가 누락되었습니다.",
   NO_PREORDER_RECEIPT: "유효하지 않거나 만료된 주문서(Preorder)입니다.",
+  NO_STOCK: "상품의 재고가 부족합니다."
 } as const;

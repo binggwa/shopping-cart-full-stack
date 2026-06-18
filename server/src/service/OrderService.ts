@@ -2,6 +2,7 @@ import {
   generateOrderReceipt,
   validateCoupon,
   CalculatedPrice,
+  PreorderItem,
 } from "@cart/shared";
 import {
   InvalidError,
@@ -15,9 +16,10 @@ import { OrderRepositoryInterface } from "../repositories/interfaces/OrderReposi
 import { CartRepositoryInterface } from "../repositories/interfaces/CartRepositoryInterface";
 import { Order } from "../repositories/Order";
 import { validateId } from "../util/Validator";
+import { PreorderRepositoryInterface } from "../repositories/interfaces/PreorderRepositoryInterface";
 
 export interface OrderRequestPayload {
-  items: { productId: number; quantity: number }[];
+  preorderId: string;
   couponIds: number[];
   isRemoteArea: boolean;
   expectedPriceSummary: CalculatedPrice;
@@ -28,32 +30,41 @@ export default class OrderService {
   #couponRepo: CouponRepositoryInterface;
   #orderRepo: OrderRepositoryInterface;
   #cartRepo: CartRepositoryInterface;
+  #preorderRepo: PreorderRepositoryInterface;
 
   constructor(
     productRepo: ProductRepositoryInterface,
     couponRepo: CouponRepositoryInterface,
     orderRepo: OrderRepositoryInterface,
     cartRepo: CartRepositoryInterface,
+    preorderRepo: PreorderRepositoryInterface,
   ) {
     this.#productRepo = productRepo;
     this.#couponRepo = couponRepo;
     this.#orderRepo = orderRepo;
     this.#cartRepo = cartRepo;
+    this.#preorderRepo = preorderRepo;
   }
 
   createOrder(payload: OrderRequestPayload): Order {
     const serverTime = new Date();
 
-    if (!payload.items || payload.items.length === 0) {
-      throw new InvalidError(ERROR_MESSAGE.NOT_FOUND_CART_ITEM);
+    const preorder = this.#preorderRepo.findById(payload.preorderId);
+    if (!preorder) {
+      throw new NotFoundError("만료되었거나 존재하지 않는 주문 세션입니다.");
     }
+
     if (!payload.expectedPriceSummary) {
       throw new InvalidError(ERROR_MESSAGE.NO_EXPECTED_PRICE);
     }
 
-    const serverItems = payload.items.map((item) => {
+    const serverItems: PreorderItem[] = preorder.items.map((item) => {
       const product = this.#productRepo.findById(item.productId);
       if (!product) throw new ConflictError(ERROR_MESSAGE.NO_MATCH_PRODUCT);
+      if (product.totalQuantity < item.quantity) {
+        throw new InvalidError(ERROR_MESSAGE.NO_STOCK);
+      }
+
       return {
         productId: product.productId,
         name: product.name,
@@ -94,8 +105,28 @@ export default class OrderService {
       giftItems: serverReceipt.giftItems,
     });
 
-    payload.items.forEach((item) => {
+    serverItems.forEach((item) => {
       this.#cartRepo.deleteByProductId(item.productId);
+    });
+
+    // 재고 차감용 임시 데이터
+    const quantityChangeMap = new Map<number, number>();
+
+    serverItems.forEach((item) => {
+      const currentQty = quantityChangeMap.get(item.productId) || 0;
+      quantityChangeMap.set(item.productId, currentQty + item.quantity);
+    });
+
+    if (serverReceipt.giftItems && serverReceipt.giftItems.length > 0) {
+      serverReceipt.giftItems.forEach((gift) => {
+        const currentQty = quantityChangeMap.get(gift.productId) || 0;
+        quantityChangeMap.set(gift.productId, currentQty + gift.giftQuantity);
+      });
+    }
+
+    // DB에서 주문+증정 수량 차감
+    quantityChangeMap.forEach((changeQuantity, productId) => {
+      this.#productRepo.decreaseQuantity(productId, changeQuantity);
     });
 
     return savedOrder;
