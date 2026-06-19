@@ -37,10 +37,6 @@ export interface Coupon {
   benefit: CouponBenefit;
 }
 
-export interface CouponResponse extends Coupon {
-  disabled: boolean;
-}
-
 export interface CalculatedPrice {
   orderAmount: number;
   discountAmount: number;
@@ -56,6 +52,13 @@ export interface GiftItem {
 export interface OrderReceipt {
   priceSummary: CalculatedPrice;
   giftItems: GiftItem[];
+}
+
+export interface OrderItemSnapshot extends PreorderItem {}
+
+export interface OrderResponse extends OrderReceipt {
+  orderId: number;
+  items: OrderItemSnapshot[];
 }
 
 export const DELIVERY_RULES = {
