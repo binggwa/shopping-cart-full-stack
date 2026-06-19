@@ -6,6 +6,11 @@ export interface PreorderItem {
   quantity: number;
 }
 
+export interface PreorderResponse {
+  preorderId: string;
+  items: PreorderItem[];
+}
+
 export type CouponType = "DISCOUNT" | "TIMESALE" | "BOGO" | "FREESHIPPING";
 
 export interface CouponCondition {
