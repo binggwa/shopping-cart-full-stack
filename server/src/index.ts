@@ -1,6 +1,8 @@
 import { runApp } from "./app";
 import InMemoryCartRepository from "./repositories/InMemoryCartRepository";
 import InMemoryCouponRepository from "./repositories/InMemoryCouponRepository";
+import InMemoryOrderRepository from "./repositories/InMemoryOrderRepository";
+import InMemoryPreorderRepository from "./repositories/InMemoryPreorderRepository";
 import InMemoryProductRepository from "./repositories/InMemoryProductRepository";
 
 const PORT = process.env.PORT ?? 3000;
@@ -9,6 +11,8 @@ const repositories = {
   productRepo: new InMemoryProductRepository(),
   cartRepo: new InMemoryCartRepository(),
   couponRepo: new InMemoryCouponRepository(),
+  orderRepo: new InMemoryOrderRepository(),
+  preorderRepo: new InMemoryPreorderRepository(),
 };
 
 repositories.productRepo.addProduct({
