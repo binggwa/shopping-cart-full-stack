@@ -1,5 +1,5 @@
-import { PreorderItem, Coupon } from "./types";
-import { calculateOrderAmount } from "./calculator";
+import { PreorderItem, Coupon } from "./types.js";
+import { calculateOrderAmount } from "./calculator.js";
 
 export const validateCoupon = (
   items: PreorderItem[],

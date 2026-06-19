@@ -4,7 +4,7 @@ import {
   GiftItem,
   OrderReceipt,
   PreorderItem,
-} from "./types";
+} from "./types.js";
 
 export const calculateOrderAmount = (items: PreorderItem[]): number => {
   return items.reduce((sum, item) => sum + item.price * item.quantity, 0);
