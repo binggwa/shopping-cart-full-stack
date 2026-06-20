@@ -7,4 +7,6 @@ export interface OrderApiInterface {
     isRemoteArea: boolean,
     expectedPriceSummary: CalculatedPrice,
   ): Promise<OrderResponse>;
+
+  getOrder(orderId: number): Promise<OrderResponse>;
 }
