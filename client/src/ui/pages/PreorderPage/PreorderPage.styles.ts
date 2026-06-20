@@ -1,5 +1,4 @@
-// frontend/src/ui/pages/PreorderPage/PreorderPage.styles.ts
-import styled from "@emotion/styled";
+import styled from '@emotion/styled';
 
 export const PageContainer = styled.div`
   display: flex;
@@ -58,6 +57,10 @@ export const Divider = styled.div`
   margin: 24px 0;
 `;
 
+export const SectionDivider = styled(Divider)`
+  margin: 0 0 24px 0;
+`;
+
 export const ProductItemWrapper = styled.div`
   display: flex;
   gap: 24px;
@@ -83,6 +86,8 @@ export const ProductName = styled.p`
   font-size: 12px;
   font-weight: 500;
   color: #0a0d13;
+  display: flex;
+  align-items: center;
 `;
 
 export const ProductPrice = styled.p`
@@ -90,6 +95,9 @@ export const ProductPrice = styled.p`
   font-weight: 700;
   color: #000000;
   margin-top: 4px;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
 `;
 
 export const ProductQuantity = styled.p`
@@ -128,12 +136,14 @@ export const SectionTitle = styled.p`
   font-size: 16px;
   font-weight: 700;
   color: #0a0d13;
+  margin-bottom: 16px;
 `;
 
 export const DeliveryCheckboxRow = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
+  cursor: pointer;
 `;
 
 export const DeliveryLabel = styled.p`
@@ -149,6 +159,15 @@ export const InfoText = styled.p`
   display: flex;
   align-items: center;
   gap: 4px;
+`;
+
+export const ModalInfoText = styled(InfoText)`
+  margin-bottom: 24px;
+`;
+
+export const IconImage = styled.img`
+  width: 16px;
+  height: 16px;
 `;
 
 export const SummarySection = styled.div`
@@ -171,7 +190,7 @@ export const PriceLabel = styled.p<{ isTotal?: boolean }>`
 `;
 
 export const PriceValue = styled.p<{ isTotal?: boolean }>`
-  font-size: ${({ isTotal }) => (isTotal ? "24px" : "18px")};
+  font-size: ${({ isTotal }) => (isTotal ? '24px' : '18px')};
   font-weight: 700;
   color: #000000;
 `;
@@ -259,7 +278,7 @@ export const CouponItemWrapper = styled.div<{ disabled?: boolean }>`
   padding-bottom: 16px;
   border-bottom: 1px solid #0000001a;
   opacity: ${({ disabled }) => (disabled ? 0.4 : 1)};
-  pointer-events: ${({ disabled }) => (disabled ? "none" : "auto")};
+  pointer-events: ${({ disabled }) => (disabled ? 'none' : 'auto')};
   cursor: pointer;
 
   &:last-child {
@@ -300,4 +319,30 @@ export const ModalApplyButton = styled.button`
   &:disabled {
     background-color: #bebebe;
   }
+`;
+
+export const GiftSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-top: 24px;
+`;
+
+export const GiftSectionTitle = styled(SectionTitle)`
+  margin-bottom: 0;
+`;
+
+export const GiftBadge = styled.span`
+  background-color: #000000;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-right: 6px;
+`;
+
+export const OriginalPriceStrike = styled.del`
+  font-size: 12px;
+  color: #999999;
+  font-weight: 500;
 `;
