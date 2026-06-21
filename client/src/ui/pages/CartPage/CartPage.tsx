@@ -36,7 +36,6 @@ export const CartPage = () => {
     toggleAll,
     deselectItem,
     isAllSelected,
-    totalSelectedQuantity,
     totalProductPrice,
     deliveryPrice,
     totalPrice,
@@ -57,7 +56,7 @@ export const CartPage = () => {
       navigate("/preorder", {
         state: { preorderId },
       });
-    } catch (err) {
+    } catch {
       alert(
         "주문서를 생성하는 도중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
       );
