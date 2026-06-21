@@ -71,7 +71,7 @@ export const handlers = [
           productId: 1,
           name: 'MSW 테스트 상품',
           price: 30000,
-          thumbnailUrl: '',
+          thumbnailUrl: 'https://example.com/test.jpg',
           quantity: 2,
         },
       ],
