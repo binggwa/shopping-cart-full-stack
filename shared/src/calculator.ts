@@ -4,7 +4,7 @@ import {
   GiftItem,
   OrderReceipt,
   PreorderItem,
-} from "./types.js";
+} from './types.js';
 
 export const calculateOrderAmount = (items: PreorderItem[]): number => {
   return items.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -39,6 +39,26 @@ export const calculateBaseShippingFee = (
     : DELIVERY_RULES.BASE_DELIVERY_FEE;
 };
 
+const extractGiftItems = (
+  items: PreorderItem[],
+  bogoCoupon?: Coupon,
+): GiftItem[] => {
+  if (!bogoCoupon) return [];
+
+  const minQuantity = bogoCoupon.condition.minBogoQuantity ?? 2;
+  const bogoTargets = items.filter((item) => item.quantity >= minQuantity);
+
+  if (bogoTargets.length === 0) return [];
+
+  const target = bogoTargets.reduce(
+    (max, item) => (item.price > max.price ? item : max),
+    bogoTargets[0],
+  );
+  const freeQuantity = bogoCoupon.benefit.bogoFreeQuantity ?? 1;
+
+  return [{ productId: target.productId, giftQuantity: freeQuantity }];
+};
+
 export const generateOrderReceipt = (
   items: PreorderItem[],
   selectedCoupons: Coupon[],
@@ -47,39 +67,15 @@ export const generateOrderReceipt = (
 ): OrderReceipt => {
   const orderAmount = calculateOrderAmount(items);
   const discountCoupons = selectedCoupons.filter(
-    (coupon) => coupon.type === "DISCOUNT",
+    (coupon) => coupon.type === 'DISCOUNT',
   );
-  const bogoCoupon = selectedCoupons.find((coupon) => coupon.type === "BOGO");
+  const bogoCoupon = selectedCoupons.find((coupon) => coupon.type === 'BOGO');
   const rateCoupons = selectedCoupons.filter(
-    (coupon) => coupon.type === "TIMESALE",
+    (coupon) => coupon.type === 'TIMESALE',
   );
   const hasFreeShippingCoupon = selectedCoupons.some(
-    (coupon) => coupon.type === "FREESHIPPING",
+    (coupon) => coupon.type === 'FREESHIPPING',
   );
-
-  const giftItems: GiftItem[] = bogoCoupon
-    ? (() => {
-        const minQuantity = bogoCoupon.condition.minBogoQuantity ?? 2;
-        const freeQuantity = bogoCoupon.benefit.bogoFreeQuantity ?? 1;
-
-        const bogoTargets = items.filter(
-          (item) => item.quantity >= minQuantity,
-        );
-        if (bogoTargets.length === 0) return [];
-
-        const target = bogoTargets.reduce(
-          (max, item) => (item.price > max.price ? item : max),
-          bogoTargets[0],
-        );
-
-        return [
-          {
-            productId: target.productId,
-            giftQuantity: freeQuantity,
-          },
-        ];
-      })()
-    : [];
 
   const fixedDiscount = discountCoupons.reduce(
     (sum, coupon) => sum + (coupon.benefit.discountAmount ?? 0),
@@ -112,6 +108,6 @@ export const generateOrderReceipt = (
       shippingFee: baseShippingFee,
       totalPaymentAmount,
     },
-    giftItems,
+    giftItems: extractGiftItems(items, bogoCoupon),
   };
 };
