@@ -3,16 +3,16 @@ import type { OrderResponse } from '@cart/shared';
 import { fetchOrderApi } from '../../../infrastructure/api/fetchOrderApi';
 
 export const useOrderConfirm = (orderId: string | undefined) => {
+  const isInvalidId = !orderId || isNaN(Number(orderId));
+
   const [order, setOrder] = useState<OrderResponse | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(!isInvalidId);
+  const [error, setError] = useState<string | null>(
+    isInvalidId ? '잘못된 접근입니다.' : null,
+  );
 
   useEffect(() => {
-    if (!orderId || isNaN(Number(orderId))) {
-      setError('잘못된 접근입니다.');
-      setIsLoading(false);
-      return;
-    }
+    if (isInvalidId) return;
 
     const loadOrderData = async () => {
       try {
@@ -30,7 +30,7 @@ export const useOrderConfirm = (orderId: string | undefined) => {
     };
 
     loadOrderData();
-  }, [orderId]);
+  }, [orderId, isInvalidId]);
 
   return { order, isLoading, error };
 };
