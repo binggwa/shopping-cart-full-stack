@@ -1,7 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import type { OrderResponse } from '@cart/shared';
-import { fetchOrderApi } from '../../../infrastructure/api/fetchOrderApi';
 import {
   BottomSection,
   ContainerWrapper,
@@ -15,43 +13,21 @@ import {
   PriceValue,
   TopHeaderBar,
 } from './OrderConfirmPage.styles';
+import { useOrderConfirm } from './useOrderConfirm';
 
 export const OrderConfirmPage = () => {
   const navigate = useNavigate();
   const { orderId } = useParams<{ orderId: string }>();
-
-  const [order, setOrder] = useState<OrderResponse | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const { order, isLoading, error } = useOrderConfirm(orderId);
 
   useEffect(() => {
-    if (!orderId || isNaN(Number(orderId))) {
-      setError('잘못된 접근입니다.');
-      setIsLoading(false);
-      return;
+    if (error) {
+      alert(error);
+      navigate('/cart', { replace: true });
     }
+  }, [error, navigate]);
 
-    const loadOrderData = async () => {
-      try {
-        const fetchedOrder = await fetchOrderApi.getOrder(Number(orderId));
-        setOrder(fetchedOrder);
-      } catch (err: any) {
-        setError(err.message || '주문 내역을 불러오는데 실패했습니다.');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadOrderData();
-  }, [orderId]);
-
-  if (error) {
-    alert(error);
-    navigate('/cart', { replace: true });
-    return null;
-  }
-
-  if (isLoading || !order) {
+  if (error || isLoading || !order) {
     return (
       <PageContainer>
         <ContainerWrapper>
