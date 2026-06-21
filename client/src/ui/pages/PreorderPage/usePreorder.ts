@@ -1,5 +1,5 @@
 // frontend/src/ui/pages/PreorderPage/usePreorder.ts
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { generateOrderReceipt } from '@cart/shared';
 import type { PreorderResponse, Coupon } from '@cart/shared';
@@ -7,6 +7,7 @@ import { fetchPreorderApi } from '../../../infrastructure/api/fetchPreorderApi';
 import { fetchCouponApi } from '../../../infrastructure/api/fetchCouponApi';
 import { fetchOrderApi } from '../../../infrastructure/api/fetchOrderApi';
 import { findBestCouponCombination } from '../../../domain/couponOptimizer';
+import { useCouponModal } from './useCouponModal';
 
 interface ApiError {
   status: number;
@@ -31,10 +32,7 @@ export const usePreorder = (preorderId: string | undefined) => {
   const [selectedCouponIds, setSelectedCouponIds] = useState<number[]>([]);
   const [isRemoteArea, setIsRemoteArea] = useState<boolean>(false);
 
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [tempSelectedCouponIds, setTempSelectedCouponIds] = useState<number[]>(
-    [],
-  );
+  const modal = useCouponModal(selectedCouponIds);
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -68,31 +66,32 @@ export const usePreorder = (preorderId: string | undefined) => {
     loadData();
   }, [preorderId, navigate]);
 
-  const currentReceipt = useMemo(() => {
-    if (!preorder) return null;
-    const activeCoupons = coupons.filter((c) =>
-      selectedCouponIds.includes(c.couponId),
-    );
-    return generateOrderReceipt(
-      preorder.items,
-      activeCoupons,
-      isRemoteArea,
-      new Date(),
-    );
-  }, [preorder, coupons, selectedCouponIds, isRemoteArea]);
+  const calculateReceipt = useCallback(
+    (targetCouponIds: number[]) => {
+      if (!preorder) return null;
+      const activeCoupons = coupons.filter((c) =>
+        targetCouponIds.includes(c.couponId),
+      );
 
-  const tempReceipt = useMemo(() => {
-    if (!preorder) return null;
-    const activeCoupons = coupons.filter((c) =>
-      tempSelectedCouponIds.includes(c.couponId),
-    );
-    return generateOrderReceipt(
-      preorder.items,
-      activeCoupons,
-      isRemoteArea,
-      new Date(),
-    );
-  }, [preorder, coupons, tempSelectedCouponIds, isRemoteArea]);
+      return generateOrderReceipt(
+        preorder.items,
+        activeCoupons,
+        isRemoteArea,
+        new Date(),
+      );
+    },
+    [preorder, coupons, isRemoteArea],
+  );
+
+  const currentReceipt = useMemo(
+    () => calculateReceipt(selectedCouponIds),
+    [calculateReceipt, selectedCouponIds],
+  );
+
+  const tempReceipt = useMemo(
+    () => calculateReceipt(modal.tempSelectedCouponIds),
+    [calculateReceipt, modal.tempSelectedCouponIds],
+  );
 
   const handlePayment = async () => {
     if (!preorder || !currentReceipt) return;
@@ -121,22 +120,9 @@ export const usePreorder = (preorderId: string | undefined) => {
     }
   };
 
-  const openModal = () => {
-    setTempSelectedCouponIds(selectedCouponIds);
-    setIsModalOpen(true);
-  };
-
-  const toggleTempCoupon = (couponId: number) => {
-    setTempSelectedCouponIds((prev) => {
-      if (prev.includes(couponId)) return prev.filter((id) => id !== couponId);
-      if (prev.length >= 2) return prev;
-      return [...prev, couponId];
-    });
-  };
-
   const applyCoupons = () => {
-    setSelectedCouponIds(tempSelectedCouponIds);
-    setIsModalOpen(false);
+    setSelectedCouponIds(modal.tempSelectedCouponIds);
+    modal.setIsModalOpen(false);
   };
 
   return {
@@ -144,16 +130,12 @@ export const usePreorder = (preorderId: string | undefined) => {
     coupons,
     isRemoteArea,
     setIsRemoteArea,
-    isModalOpen,
-    setIsModalOpen,
-    tempSelectedCouponIds,
     isLoading,
     isSubmitting,
     currentReceipt,
     tempReceipt,
     handlePayment,
-    openModal,
-    toggleTempCoupon,
     applyCoupons,
+    ...modal,
   };
 };
