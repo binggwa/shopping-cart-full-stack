@@ -59,6 +59,22 @@ const extractGiftItems = (
   return [{ productId: target.productId, giftQuantity: freeQuantity }];
 };
 
+const calculateRateDiscount = (
+  amount: number,
+  coupons: Coupon[],
+  currentTime: Date,
+): number => {
+  return coupons.reduce((sum, coupon) => {
+    const hour = currentTime.getHours();
+    const startHour = coupon.condition.validTime?.startHour ?? 4;
+    const endHour = coupon.condition.validTime?.endHour ?? 7;
+    const discountRate = coupon.benefit.discountRate ?? 0;
+
+    if (hour >= startHour && hour < endHour) return sum + amount * discountRate;
+    return sum;
+  }, 0);
+};
+
 export const generateOrderReceipt = (
   items: PreorderItem[],
   selectedCoupons: Coupon[],
@@ -81,16 +97,11 @@ export const generateOrderReceipt = (
     (sum, coupon) => sum + (coupon.benefit.discountAmount ?? 0),
     0,
   );
-  const amountAfterFixed = orderAmount - fixedDiscount;
-
-  const rateDiscount = rateCoupons.reduce((sum, coupon) => {
-    const hour = currentTime.getHours();
-    const start = coupon.condition.validTime?.startHour ?? 4;
-    const end = coupon.condition.validTime?.endHour ?? 7;
-    const rate = coupon.benefit.discountRate ?? 0;
-
-    return hour >= start && hour < end ? sum + amountAfterFixed * rate : sum;
-  }, 0);
+  const rateDiscount = calculateRateDiscount(
+    orderAmount - fixedDiscount,
+    rateCoupons,
+    currentTime,
+  );
 
   const baseShippingFee = calculateBaseShippingFee(orderAmount, isRemoteArea);
 
@@ -98,7 +109,6 @@ export const generateOrderReceipt = (
   const shippingDiscount = hasFreeShippingCoupon ? baseShippingFee : 0;
 
   const totalCashDiscount = totalProductDiscount + shippingDiscount;
-
   const totalPaymentAmount = orderAmount + baseShippingFee - totalCashDiscount;
 
   return {
