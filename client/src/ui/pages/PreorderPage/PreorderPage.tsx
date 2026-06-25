@@ -1,10 +1,8 @@
-import { Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { validateCoupon } from '@cart/shared';
-import type { Coupon } from '@cart/shared';
-import backIcon from '../../../assets/backIcon.svg';
-import infoIcon from '../../../assets/InfoIcon.svg';
-import { Header } from '../../components/Header/Header';
-import { Checkbox } from '../../components/Checkbox/Checkbox';
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import backIcon from "../../../assets/backIcon.svg";
+import infoIcon from "../../../assets/InfoIcon.svg";
+import { Header } from "../../components/Header/Header";
+import { Checkbox } from "../../components/Checkbox/Checkbox";
 import {
   BottomSection,
   ContainerWrapper,
@@ -28,46 +26,22 @@ import {
   DeliveryCheckboxRow,
   DeliveryLabel,
   InfoText,
-  ModalInfoText,
   IconImage,
   SummarySection,
   PriceRow,
   PriceLabel,
   PriceValue,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalTitle,
-  CloseButton,
-  CouponListWrapper,
-  CouponItemWrapper,
-  CouponInfoWrapper,
-  CouponName,
-  CouponDetail,
-  ModalApplyButton,
   GiftSection,
   GiftBadge,
   OriginalPriceStrike,
-} from './PreorderPage.styles';
-import { CART_RULES } from '../../../domain/constants';
-import { usePreorder } from './usePreorder';
+} from "./PreorderPage.styles";
+import { CART_RULES } from "../../../domain/constants";
+import { usePreorder } from "./usePreorder";
+import { CouponModal } from "../../components/CouponModal/CouponModal";
 
 interface PreorderState {
   preorderId: string;
 }
-
-const formatExpirationDate = (dateString: string) => {
-  const [year, month, day] = dateString.split('-');
-  return `${year}년 ${Number(month)}월 ${Number(day)}일`;
-};
-
-const formatCondition = (condition: Coupon['condition']) => {
-  if (condition.minOrderLimit)
-    return `최소 주문 금액: ${condition.minOrderLimit.toLocaleString()}원`;
-  if (condition.validTime)
-    return `사용 가능 시간: ${condition.validTime.startHour}시부터 ${condition.validTime.endHour}시까지`;
-  return '';
-};
 
 export const PreorderPage = () => {
   const location = useLocation();
@@ -97,7 +71,7 @@ export const PreorderPage = () => {
       <Navigate
         to="/cart"
         replace
-        state={{ error: '비정상적인 접근입니다!' }}
+        state={{ error: "비정상적인 접근입니다!" }}
       />
     );
   }
@@ -114,7 +88,7 @@ export const PreorderPage = () => {
   return (
     <PageContainer>
       <ContainerWrapper>
-        <Header iconSrc={backIcon} onLogoClick={() => navigate('/cart')} />
+        <Header iconSrc={backIcon} onLogoClick={() => navigate("/cart")} />
 
         <MainContent>
           <TitleSection>
@@ -160,7 +134,7 @@ export const PreorderPage = () => {
                         {originalItem.name}
                       </ProductName>
                       <ProductPrice>
-                        0원{' '}
+                        0원{" "}
                         <OriginalPriceStrike>
                           {originalItem.price.toLocaleString()}원
                         </OriginalPriceStrike>
@@ -182,7 +156,7 @@ export const PreorderPage = () => {
               <DeliveryLabel>제주도 및 도서 산간 지역</DeliveryLabel>
             </DeliveryCheckboxRow>
             <InfoText>
-              <IconImage src={infoIcon} alt="info" />총 주문 금액이{' '}
+              <IconImage src={infoIcon} alt="info" />총 주문 금액이{" "}
               {CART_RULES.FREE_DELIVERY_LIMIT.toLocaleString()}원 이상일 경우
               무료 배송됩니다.
             </InfoText>
@@ -200,7 +174,7 @@ export const PreorderPage = () => {
             <PriceRow>
               <PriceLabel>쿠폰 할인 금액</PriceLabel>
               <PriceValue>
-                {currentReceipt.priceSummary.discountAmount > 0 ? '-' : ''}
+                {currentReceipt.priceSummary.discountAmount > 0 ? "-" : ""}
                 {currentReceipt.priceSummary.discountAmount.toLocaleString()}원
               </PriceValue>
             </PriceRow>
@@ -229,65 +203,16 @@ export const PreorderPage = () => {
           </PayButton>
         </BottomSection>
 
-        {isModalOpen && (
-          <ModalOverlay onClick={() => closeModal()}>
-            <ModalContent onClick={(e) => e.stopPropagation()}>
-              <ModalHeader>
-                <ModalTitle>쿠폰을 선택해 주세요</ModalTitle>
-                <CloseButton onClick={() => closeModal()}>
-                  ✕
-                </CloseButton>
-              </ModalHeader>
-
-              <ModalInfoText>
-                <IconImage src={infoIcon} alt="info" />
-                쿠폰은 최대 2개까지 사용할 수 있습니다.
-              </ModalInfoText>
-
-              <CouponListWrapper>
-                {coupons.map((coupon) => {
-                  const isValid = validateCoupon(
-                    preorder.items,
-                    coupon,
-                    new Date(),
-                  );
-                  const isChecked = tempSelectedCouponIds.includes(
-                    coupon.couponId,
-                  );
-
-                  return (
-                    <CouponItemWrapper
-                      key={coupon.couponId}
-                      disabled={!isValid}
-                      onClick={() =>
-                        isValid && toggleTempCoupon(coupon.couponId)
-                      }
-                    >
-                      <Checkbox checked={isChecked} onChange={() => {}} />
-                      <CouponInfoWrapper>
-                        <CouponName>{coupon.name}</CouponName>
-                        {coupon.expirationDate && (
-                          <CouponDetail>
-                            만료일:{' '}
-                            {formatExpirationDate(coupon.expirationDate)}
-                          </CouponDetail>
-                        )}
-                        <CouponDetail>
-                          {formatCondition(coupon.condition)}
-                        </CouponDetail>
-                      </CouponInfoWrapper>
-                    </CouponItemWrapper>
-                  );
-                })}
-              </CouponListWrapper>
-
-              <ModalApplyButton onClick={applyCoupons}>
-                총 {tempReceipt.priceSummary.discountAmount.toLocaleString()}원
-                할인 쿠폰 사용하기
-              </ModalApplyButton>
-            </ModalContent>
-          </ModalOverlay>
-        )}
+        <CouponModal
+          isOpen={isModalOpen}
+          coupons={coupons}
+          preorderItems={preorder.items}
+          tempSelectedCouponIds={tempSelectedCouponIds}
+          tempReceipt={tempReceipt}
+          onClose={closeModal}
+          onToggle={toggleTempCoupon}
+          onApply={applyCoupons}
+        />
       </ContainerWrapper>
     </PageContainer>
   );
