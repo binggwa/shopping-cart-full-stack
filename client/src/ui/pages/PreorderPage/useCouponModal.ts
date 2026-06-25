@@ -11,6 +11,10 @@ export const useCouponModal = (selectedCouponIds: number[]) => {
     setIsModalOpen(true);
   };
 
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
   const toggleTempCoupon = (couponId: number) => {
     if (tempSelectedCouponIds.includes(couponId)) {
       setTempSelectedCouponIds((prev) => prev.filter((id) => id !== couponId));
@@ -27,9 +31,9 @@ export const useCouponModal = (selectedCouponIds: number[]) => {
 
   return {
     isModalOpen,
-    setIsModalOpen,
     tempSelectedCouponIds,
     openModal,
+    closeModal,
     toggleTempCoupon,
   };
 };

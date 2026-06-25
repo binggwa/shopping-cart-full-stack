@@ -122,7 +122,7 @@ export const usePreorder = (preorderId: string | undefined) => {
 
   const applyCoupons = () => {
     setSelectedCouponIds(modal.tempSelectedCouponIds);
-    modal.setIsModalOpen(false);
+    modal.closeModal();
   };
 
   return {

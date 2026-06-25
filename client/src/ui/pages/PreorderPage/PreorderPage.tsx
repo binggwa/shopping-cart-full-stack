@@ -80,7 +80,7 @@ export const PreorderPage = () => {
     isRemoteArea,
     setIsRemoteArea,
     isModalOpen,
-    setIsModalOpen,
+    closeModal,
     tempSelectedCouponIds,
     isLoading,
     isSubmitting,
@@ -230,11 +230,11 @@ export const PreorderPage = () => {
         </BottomSection>
 
         {isModalOpen && (
-          <ModalOverlay onClick={() => setIsModalOpen(false)}>
+          <ModalOverlay onClick={() => closeModal()}>
             <ModalContent onClick={(e) => e.stopPropagation()}>
               <ModalHeader>
                 <ModalTitle>쿠폰을 선택해 주세요</ModalTitle>
-                <CloseButton onClick={() => setIsModalOpen(false)}>
+                <CloseButton onClick={() => closeModal()}>
                   ✕
                 </CloseButton>
               </ModalHeader>
