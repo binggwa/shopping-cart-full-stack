@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 
 export const useCouponModal = (selectedCouponIds: number[]) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -14,7 +14,10 @@ export const useCouponModal = (selectedCouponIds: number[]) => {
   const toggleTempCoupon = (couponId: number) => {
     setTempSelectedCouponIds((prev) => {
       if (prev.includes(couponId)) return prev.filter((id) => id !== couponId);
-      if (prev.length >= 2) return prev;
+      if (prev.length >= 2) {
+        alert("쿠폰은 최대 2개까지 사용할 수 있습니다!!");
+        return prev;
+      }
       return [...prev, couponId];
     });
   };
